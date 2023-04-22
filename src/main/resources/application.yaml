@@ -1,0 +1,7 @@
+gpt:
+  modelName: gpt-3.5-turbo
+  url: https://api.openai.com/v1/chat/completions
+  pk: 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
+
+server:
+  port: 9000

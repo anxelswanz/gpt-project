@@ -1,0 +1,138 @@
+
+<html lang="zh-CN"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPT-Box</title>
+    <!-- 引入 Bootstrap 样式表 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <style>
+        .btn {
+            float: right; /* 将按钮设置为右浮动 */
+            background-color: black;  /* 将按钮背景颜色设为黑色 */
+        }
+        body {
+            background:url("/img/space.jpg");
+            background-size: 100%;
+        }
+        .font-color {
+            color: aliceblue;
+        }
+
+        .font-style-big {
+            font-family: 'Lato', sans-serif;
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            color: whitesmoke;
+            opacity: 80%;
+            text-shadow: 1px 1px #ddd;
+        }
+
+        .font-style-medium {
+            font-family: 'Lato', sans-serif;
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            color: ghostwhite;
+            opacity: 80%;
+            text-shadow: 0.5px 0.5px #ddd;
+        }
+
+        #copy {
+            font-family: 'Arial', sans-serif;
+            color: whitesmoke;
+            font-size: 18px;
+            font-style: italic;
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #copy a {
+            color: cornflowerblue;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #copy a:hover {
+            color: #c0392b;
+        }
+
+        .opacity-mini {
+            opacity: 80%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container mt-5">
+    <h2 class="row justify-content-center font-style-big" >ChatBox</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form id="question-form">
+                <div class="form-group">
+                    <label for="question-input" class="font-style-medium">Please type your question：</label>
+                    <input type="text" class="form-control opacity-mini" id="question-input" name="question" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="answer-textarea" class="font-style-medium">Answer：</label>
+                <textarea  class="form-control opacity-mini" id="answer-textarea" rows="5" readonly></textarea>
+            </div>
+        </div>
+    </div>
+    <div id="copy">&copy;2023 CHANGSHA, All Rights Reserved. Powered by <a href="#">anxelswanz</a>.</div>
+</div>
+
+<!-- 引入 jQuery 库和 Bootstrap JavaScript 插件 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+<script>
+    var speed = 55; // 每个字符打字的速度
+
+    function typeWriter(text, i) {
+        if (i < text.length) {
+            document.getElementById("answer-textarea").innerHTML += text.charAt(i);
+            i++;
+            setTimeout(function(){
+                typeWriter(text, i)
+            }, speed);
+        }
+
+    }
+
+    $(document).ready(function () {
+        $("#question-form").submit(function (event) {
+            event.preventDefault();
+            var content = $("#question-input").val();
+            $.ajax({
+                url: "/ask",
+                type: "POST",
+                data: {'content':content},
+                success: function (data) {
+                    console.log(data.data)
+                   // $("#answer-textarea").val(data.data);
+                    typeWriter("1"+data.data, 0);
+                    document.getElementById("answer-textarea").innerHTML = "\n";
+                },
+                error: function (xhr) {
+                    alert("Sorry，Wrong Code：" + xhr.status);
+                }
+            });
+        });
+    });
+
+
+</script>
+
+
+</body>
+</html>
